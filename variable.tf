@@ -22,7 +22,7 @@ variable "availability_zone" {
 }
 variable "instance_ami" {
   description = "AMI for aws EC2 instance"
-  default = "ubuntu"
+  default = "ami-09e513e9eacab10c1"
 }
 variable "instance_type" {
   description = "type for aws EC2 instance"
