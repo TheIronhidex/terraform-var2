@@ -66,7 +66,7 @@ pipeline {
             }
         }
 	    
-	stage('Input of new variables) {
+	stage('Input of new variables') {
             steps{
                 sh """
 		cat <<EOT > default.yml
