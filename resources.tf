@@ -9,8 +9,8 @@ provider "aws" {
 ##Create vpc
 resource "aws_vpc" "vpc" {
   cidr_block = "${var.cidr_vpc}"
-  enable_dns_support   = true
-  enable_dns_hostnames = true
+  enable_dns_support   = false
+  enable_dns_hostnames = false
 }
 
 ##Create gateway
@@ -49,6 +49,20 @@ resource "aws_security_group" "sg_22" {
   ingress {
       from_port   = 22
       to_port     = 22
+      protocol    = "tcp"
+      cidr_blocks = ["0.0.0.0/0"]
+  }
+  
+  ingress {
+      from_port   = 80
+      to_port     = 80
+      protocol    = "tcp"
+      cidr_blocks = ["0.0.0.0/0"]
+  }
+  
+    ingress {
+      from_port   = 443
+      to_port     = 443
       protocol    = "tcp"
       cidr_blocks = ["0.0.0.0/0"]
   } 
