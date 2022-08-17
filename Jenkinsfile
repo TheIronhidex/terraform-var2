@@ -5,6 +5,7 @@ pipeline {
 	REGION = 'eu-west-3'
         DOCKER_REPO = 'theironhidex'
         CONTAINER_PORT = '87'
+	NUMBER_CONTAINERS = '1'
       }
 
  agent any
@@ -56,13 +57,11 @@ pipeline {
 	     withCredentials([
 		     aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-jose', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
                 sh """
-		            terraform apply -var=\"container_port=${env.CONTAINER_PORT}\" \
-                -var=\"reponame=${env.DOCKER_REPO}/${JOB_BASE_NAME}:${BUILD_NUMBER}\" \
-                -var=\"region=${env.REGION}\" \
+		 terraform apply -var=\"region=${env.REGION}\" \
                 -var=\"access_key=${AWS_ACCESS_KEY_ID}\" \
                 -var=\"secret_key=${AWS_SECRET_ACCESS_KEY}\" \
                 --auto-approve
-                """
+                   """
 	            }
 		            script {
 		                PUBLIC_IP_EC2 = sh (returnStdout: true, script: "terraform output instance public_ip").trim()
@@ -74,9 +73,30 @@ pipeline {
             steps{
                 sh "echo $PUBLIC_IP_EC2 > inventory.hosts"
             }
+	    script {
+		IMAGE = "${env.DOCKER_REPO}/${JOB_BASE_NAME}:${BUILD_NUMBER}"
+	                  }
         }
 	    
-	stage ("Ansible Hello World") {
+	stage('Input of new variables) {
+            steps{
+                sh """
+		cat <<EOT > default.yml
+		---
+		create_containers: ${NUMBER_CONTAINERS}
+		default_container_image: ${IMAGE}
+		EOT
+		   """
+            }
+        }
+	
+	stage('Wait 5 minutes') {
+            steps {
+                sleep time:5, unit: 'MINUTES'
+            }
+        }      
+	    
+	stage ("Ansible run image") {
             steps {
                 ansiblePlaybook become: true, colorized: true, extras: '-v', disableHostKeyChecking: true, credentialsId: 'jose-ssh', installation: 'ansible210', inventory: 'inventory.hosts', playbook: 'playbook-run-docker.yml'
             }
