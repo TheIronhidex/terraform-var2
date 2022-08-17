@@ -49,15 +49,14 @@ pipeline {
                    """
 	            }
 		            script {
-		                PUBLIC_IP_EC2 = sh (script: "terraform output public_instance_ip", returnStdout: true).trim()
+		                IP_EC2=sh (script: "terraform output -json public_instance_ip | jq -r '.[0]'", returnStdout: true).trim()
 	                  }
-		    echo "${PUBLIC_IP_EC2}"
 	        }
 	    }
 
         stage('Input of new IPs') {
             steps{
-                sh "echo $PUBLIC_IP_EC2 > inventory.hosts"
+	       sh "echo ${IP_EC2} > inventory.hosts"
             }
         }
 	    
