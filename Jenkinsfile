@@ -64,7 +64,6 @@ pipeline {
             steps{
                 sh """
 		cat <<EOT > default.yml
-		---
 		create_containers: ${NUMBER_CONTAINERS}
 		default_container_image: ${env.DOCKER_REPO}/${JOB_BASE_NAME}:${BUILD_NUMBER}
 		default_container_command: run -d -p80:80
