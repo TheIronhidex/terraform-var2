@@ -73,11 +73,11 @@ pipeline {
             }
         }
 	
-	stage('Wait 5 minutes') {
-            steps {
-                sleep time:5, unit: 'MINUTES'
-            }
-        }      
+	//stage('Wait 5 minutes') {
+            //steps {
+                //sleep time:5, unit: 'MINUTES'
+            //}
+        //}      
 	    
 	stage ("Ansible run image") {
             steps {
