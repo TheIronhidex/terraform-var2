@@ -1,10 +1,3 @@
-variable "container_port" {
-  description = "port for exposing the nginx server"
-  default = 87
-}
-variable "reponame" {
-  description = "name of the image"
-}
 variable "region" {
   description = "region for launching AWS resources"
   default = "eu-west-3"
