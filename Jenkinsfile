@@ -2,7 +2,7 @@ pipeline {
     environment {
         GIT_REPO = 'https://github.com/TheIronhidex/terraform-var2'
         GIT_BRANCH = 'main'
-	      REGION = 'eu-west-3'
+	REGION = 'eu-west-3'
         DOCKER_REPO = 'theironhidex'
         CONTAINER_PORT = '87'
       }
@@ -11,8 +11,7 @@ pipeline {
     tools {
        terraform 'terraform20803'
     }
-    stages {
-        
+    stages {   
         stage ("Get Code") {
             steps {
                 git branch: "${env.GIT_BRANCH}", url: "${env.GIT_REPO}"
@@ -73,35 +72,16 @@ pipeline {
 
         stage('Input of new IPs') {
             steps{
-                sh "echo $PUBLIC_IP_EC2 > inventory.host"
+                sh "echo $PUBLIC_IP_EC2 > inventory.hosts"
             }
         }
 	    
-	      stage ("Ansible Hello World") {
+	stage ("Ansible Hello World") {
             steps {
-                ansiblePlaybook become: true, colorized: true, extras: '-v', disableHostKeyChecking: true, credentialsId: 'gonzafirma-ssh-server01', installation: 'ansible210', inventory: 'inventory.hosts', playbook: 'playbook-hello-world.yml'
+                ansiblePlaybook become: true, colorized: true, extras: '-v', disableHostKeyChecking: true, credentialsId: 'jose-ssh', installation: 'ansible210', inventory: 'inventory.hosts', playbook: 'playbook-run-docker.yml'
             }
         }
-        stage ("Ansible Connect to HOST and Install Package") {
-            steps {
-                ansiblePlaybook become: true, colorized: true, extras: '-v', disableHostKeyChecking: true, credentialsId: 'gonzafirma-ssh-server01', installation: 'ansible210', inventory: 'inventory.hosts', playbook: 'playbook-install-package-ubuntu.yml'
-            }
-        }
-        stage ("Ansible Connect to HOST and execute a command") {
-            steps {
-                ansiblePlaybook become: true, colorized: true, extras: '-v', disableHostKeyChecking: true, credentialsId: 'gonzafirma-ssh-server01', installation: 'ansible210', inventory: 'inventory.hosts', playbook: 'playbook-execute-command.yml'
-            }
-        }
-        stage('Manual Approval to Uninstall Package') {
-            steps{
-                input "Proceed to Uninstall Package?"
-            }
-        }
-        stage ("Ansible Connect to HOST and Uninstall Package") {
-            steps {
-                ansiblePlaybook become: true, colorized: true, extras: '-v', disableHostKeyChecking: true, credentialsId: 'gonzafirma-ssh-server01', installation: 'ansible210', inventory: 'inventory.hosts', playbook: 'playbook-uninstall-ubuntu-package.yml'
-            }
-        }
+        
 	    stage('Destroy infras?') {
             steps{
                 input "Proceed destroying the infrastructure?"
