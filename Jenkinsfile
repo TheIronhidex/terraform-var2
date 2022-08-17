@@ -49,7 +49,7 @@ pipeline {
                    """
 	            }
 		            script {
-		                IP_EC2=sh (script: "terraform output -json public_instance_ip | jq -r '.[0]'", returnStdout: true).trim()
+		                IP_EC2=sh (script: "terraform output -raw public_instance_ip", returnStdout:true).trim()
 	                  }
 	        }
 	    }
