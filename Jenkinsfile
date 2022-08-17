@@ -36,12 +36,6 @@ pipeline {
                 sh 'terraform init'
             }
         }
-	    
-        stage('Build infras?') {
-            steps{
-                input "Proceed building the infrastructure?"
-            }
-        }
         
         stage('terraform apply') {
             steps{
