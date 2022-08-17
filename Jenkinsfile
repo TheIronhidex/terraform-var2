@@ -1,10 +1,7 @@
 pipeline {
     environment {
-        GIT_REPO = 'https://github.com/TheIronhidex/terraform-var2'
-        GIT_BRANCH = 'main'
 	REGION = 'eu-west-3'
         DOCKER_REPO = 'theironhidex'
-        CONTAINER_PORT = '87'
 	NUMBER_CONTAINERS = '1'
       }
 
@@ -13,12 +10,6 @@ pipeline {
        terraform 'terraform20803'
     }
     stages {   
-        stage ("Get Code") {
-            steps {
-                git branch: "${env.GIT_BRANCH}", url: "${env.GIT_REPO}"
-            }
-        }
-
         stage ("Build Image") {
             steps {
                 sh "docker build -t ${env.DOCKER_REPO}/${JOB_BASE_NAME}:${BUILD_NUMBER} ."
@@ -73,9 +64,6 @@ pipeline {
             steps{
                 sh "echo $PUBLIC_IP_EC2 > inventory.hosts"
             }
-	    script {
-		IMAGE = "${env.DOCKER_REPO}/${JOB_BASE_NAME}:${BUILD_NUMBER}"
-	                  }
         }
 	    
 	stage('Input of new variables) {
@@ -84,7 +72,7 @@ pipeline {
 		cat <<EOT > default.yml
 		---
 		create_containers: ${NUMBER_CONTAINERS}
-		default_container_image: ${IMAGE}
+		default_container_image: ${env.DOCKER_REPO}/${JOB_BASE_NAME}:${BUILD_NUMBER}
 		EOT
 		   """
             }
