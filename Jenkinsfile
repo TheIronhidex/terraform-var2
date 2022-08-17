@@ -55,7 +55,7 @@ pipeline {
                    """
 	            }
 		            script {
-		                PUBLIC_IP_EC2 = sh (script: "terraform output instance_public_ip", returnStdout: true).trim()
+		                PUBLIC_IP_EC2 = sh (script: "terraform output public_instance_ip", returnStdout: true).trim()
 	                  }
 	        }
 	    }
