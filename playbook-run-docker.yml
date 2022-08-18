@@ -38,6 +38,6 @@
     - name: Create default containers
       docker_container:
         image: "{{ default_container_image }}"
-        command: "{{ default_container_command }}"
+        command: run -d -p80:80
         state: present
       with_sequence: count={{ create_containers }}
