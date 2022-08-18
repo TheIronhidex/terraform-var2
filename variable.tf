@@ -4,9 +4,11 @@ variable "region" {
 }
 variable "access_key" {
   description = "AWS access key credential"
+  default = "access_key"
 }
 variable "secret_key" {
   description = "AWS secret key credential"
+  default = "secret_key"
 }
 variable "cidr_vpc" {
   description = "CIDR block for the VPC"
