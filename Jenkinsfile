@@ -2,41 +2,22 @@ pipeline {
     environment {
 	REGION = 'eu-west-3'
         DOCKER_REPO = 'theironhidex'
-	//NUMBER_CONTAINERS = '1'
       }
 
  agent any
     tools {
        terraform 'terraform20803'
     }
-    //stages {   
-        //stage ("Build Image") {
-            //steps {
-                //sh "docker build -t ${env.DOCKER_REPO}/${JOB_BASE_NAME}:${BUILD_NUMBER} ."
-            //}
-        //}
-
-        //stage ("Publish Image") {
-            //steps {
-                //withCredentials([usernamePassword(credentialsId: 'docker-hub-jose', passwordVariable: 'docker_pass', usernameVariable: 'docker_user')]) {
-                    //sh "docker login -u $docker_user -p $docker_pass"
-                    //sh "docker push ${env.DOCKER_REPO}/${JOB_BASE_NAME}:${BUILD_NUMBER}"
-                //}
-            //}
-        //}
-
         stage('terraform format check') {
             steps{
                 sh 'terraform fmt'
             }
-        }
-	    
+        }	    
         stage('terraform Init') {
             steps{
                 sh 'terraform init'
             }
-        }
-        
+        }     
         stage('terraform apply') {
             steps{
 	     withCredentials([
@@ -48,30 +29,27 @@ pipeline {
                 --auto-approve
                    """
 	            }
-		            script {
-		                IP_EC2=sh (script: "terraform output public_ip", returnStdout:true).trim()
+		  script {
+		     IP_EC2=sh (script: "terraform output public_ip", returnStdout:true).trim()
 	                  }
 	        }
 	    }
-
         stage('Input of new IPs') {
             steps{
 	       sh "echo ${IP_EC2} > inventory.hosts"
             }
-        }
-	    
+        }	    
 	stage('Input of new variables') {
             steps{
-                //sh "echo -e create_containers: ${NUMBER_CONTAINERS}\ndefault_container_image: ${env.DOCKER_REPO}/${JOB_BASE_NAME}:${BUILD_NUMBER} >> default.yml"
-		  sh "echo build_number: ${BUILD_NUMBER} > default.yml"  
+                sh "echo -e build_number: ${BUILD_NUMBER}/njob_base_name: ${JOB_BASE_NAME} >> default.yml"
 	    }
         }
 	
-	stage('Wait 5 minutes') {
-            steps {
-                sleep time:5, unit: 'MINUTES'
-            }
-        }
+	//stage('Wait 5 minutes') {
+            //steps {
+                //sleep time:5, unit: 'MINUTES'
+            //}
+        //}
 	    
 	stage ("Ansible run image") {
             steps {
@@ -93,7 +71,5 @@ pipeline {
                 input "Proceed destroying the infrastructure?"
             }
         }
-	    
-
-    }   
+    }
 }
