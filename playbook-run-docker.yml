@@ -1,28 +1,56 @@
 ---
+---
 - hosts: all
   become: true
   vars_files:
-    - default.yml
+  - default.yml
   tasks:
-  - name: Update the machine
-    command: sudo apt-get clean && update -y
-    
-  - name: Download docker installer 
-    get_url: 
-      url: https://get.docker.com 
-      dest: get-docker.sh
-    
-  - name: Execute docker installer
-    command: sudo sh get-docker.sh
+    - name: installa dipendenze
+      apt:
+        name: "{{item}}"
+        state: present
+        update_cache: yes
+      loop:
+        - apt-transport-https
+        - ca-certificates
+        - curl
+        - gnupg-agent
+        - software-properties-common
+        
+    - name: aggiungi chiave GPG
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+        
+    - name: aggiungi repository docker
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu bionic stable
+        state: present
+        
+    - name: installa docker
+      apt:
+        name: "{{item}}"
+        state: latest
+        update_cache: yes
+      loop:
+        - docker-ce
+        - docker-ce-cli
+        - containerd.io
+        
+    - name: assicurati che docker sia attivo
+      service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Pull image for launching server
+      docker_image:
+        image: theironhidex/terraform-var:"{{ build_number }}"
       
-  - name: Pull image for launching server
-    docker_image:
-      image: theironhidex/terraform-var:"{{ build_number }}"
-      
-  - name: Launch Container Image to Start Web Server
-    docker_container:
-      name: webserver
-      image: theironhidex/terraform-var:"{{ build_number }}"
-      state: started
-      ports:
-      - "80:80"
+    - name: Launch Container Image to Start Web Server
+      docker_container:
+        name: webserver
+        image: theironhidex/terraform-var:"{{ build_number }}"
+        state: started
+        ports:
+        - "80:80"
