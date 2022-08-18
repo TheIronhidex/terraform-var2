@@ -12,9 +12,15 @@
       name: ['ca-certificates','curl','gnupg','lsb-release']
       state: present
       update_cache: no
-      
+    
   - name: Add Docker GPG apt Key
-    apt_key: url=https://download.docker.com/linux/ubuntu/gpg
+    command: sudo mkdir -p /etc/apt/keyrings
+      
+  - name: Run a script with arguments (free form)
+    ansible.builtin.script: curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+
+      
+
     
   - name: Add Docker Repository
     apt_repository:
