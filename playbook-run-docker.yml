@@ -5,7 +5,7 @@
   tasks:
   
     - name: Update the machine
-      command: sudo apt update -y
+      command: sudo apt-get clean && update -y
   
     - name: Install basic list of packages
     apt:
