@@ -62,14 +62,8 @@ pipeline {
 	    
 	stage('Input of new variables') {
             steps{
-                sh """
-		cat <<EOT > default.yml
-		create_containers: ${NUMBER_CONTAINERS}
-		default_container_image: ${env.DOCKER_REPO}/${JOB_BASE_NAME}:${BUILD_NUMBER}
-		default_container_command: run -d -p80:80
-		EOT
-		   """
-            }
+                sh "echo -e create_containers: ${NUMBER_CONTAINERS}\ndefault_container_image: ${env.DOCKER_REPO}/${JOB_BASE_NAME}:${BUILD_NUMBER}\nefault_container_command: run -d -p80:80 >> default.yml"
+	    }
         }
 	
 	//stage('Wait 5 minutes') {
