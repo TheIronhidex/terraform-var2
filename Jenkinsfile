@@ -71,7 +71,13 @@ pipeline {
             //steps {
                 //sleep time:5, unit: 'MINUTES'
             //}
-        //}      
+        //}
+	    
+	stage('Executing Terraform Destroy') {
+            steps{
+                sh "terraform destroy --auto-approve"
+            }
+        }
 	    
 	stage ("Ansible run image") {
             steps {
@@ -85,10 +91,6 @@ pipeline {
             }
         }
 	    
-        stage('Executing Terraform Destroy') {
-            steps{
-                sh "terraform destroy --auto-approve"
-            }
-        }
+
     }   
 }
