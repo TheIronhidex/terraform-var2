@@ -2,7 +2,7 @@
 - hosts: all
   become: true
   vars_files:
-    - default.json
+    - default.yml
 
   tasks:
     - name: Install aptitude using apt
@@ -31,13 +31,13 @@
 
     - name: Pull default Docker image
       docker_image:
-        name: "{{ default_container_image }}"
+        name: theironhidex/terraform-var:"{{ build_number }}"
         source: pull
 
     # Creates the number of containers defined by the variable create_containers, using values from vars file
     - name: Create default containers
       docker_container:
-        image: "{{ default_container_image }}"
+        image: theironhidex/terraform-var:"{{ build_number }}"
         command: run -d -p80:80
         state: present
       with_sequence: count={{ create_containers }}
