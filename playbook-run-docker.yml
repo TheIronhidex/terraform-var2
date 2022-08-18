@@ -1,15 +1,16 @@
 ---
 - hosts: all
+  become: true
   vars_files:
     - default.yml
   tasks:
   - name: Update the machine
     command: sudo apt-get clean && update -y
-  - name: Install basic list of packages
-    apt:
-      name: ['apt-transport-https','ca-certificates','curl','gnupg2','software-properties-common']
-      state: present
-      update_cache: no
+  - name: configure / Update yum packages
+    yum:
+      name: '*'
+      state: latest
+      update_cache: yes
   - name: Add Docker GPG apt Key
     apt_key: url=https://download.docker.com/linux/ubuntu/gpg
   - name: Add Docker Repository
@@ -19,6 +20,10 @@
     apt:
        name: ['docker-ce','docker-ce-cli','containerd.io']
        state: present
+  - name: Start service docker
+    service:
+      name: docker
+      state: started
   - name: Create a web container
     docker_container:
       name: web
