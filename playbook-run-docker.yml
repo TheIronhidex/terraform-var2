@@ -13,11 +13,8 @@
       state: present
       update_cache: no
       
-  - name: Add Docker GPG apt Key (I)
-    command: sudo mkdir -p /etc/apt/keyrings
-    
-  - name: Add Docker GPG apt Key (II)
-    command: sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+  - name: Add Docker GPG apt Key
+    apt_key: url=https://download.docker.com/linux/ubuntu/gpg
     
   - name: Add Docker Repository
     apt_repository:
