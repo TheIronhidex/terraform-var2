@@ -67,27 +67,27 @@ pipeline {
 	    }
         }
 	
-	//stage('Wait 5 minutes') {
-            //steps {
-                //sleep time:5, unit: 'MINUTES'
-            //}
-        //}
-	    
-	stage('terraform destroy') {
-            steps{
-		    withCredentials([
-		     aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-jose', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
-                sh "terraform destroy --auto-approve"
-		    }
-	    }
-	}
+	stage('Wait 5 minutes') {
+            steps {
+                sleep time:5, unit: 'MINUTES'
+            }
+        }
 	    
 	stage ("Ansible run image") {
             steps {
                 ansiblePlaybook become: true, colorized: true, extras: '-v', disableHostKeyChecking: true, credentialsId: 'jose-ssh', installation: 'ansible210', inventory: 'inventory.hosts', playbook: 'playbook-run-docker.yml'
             }
         }
-        
+        	    
+	stage('terraform destroy') {
+            steps{
+		    //withCredentials([
+		     //aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-jose', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                sh "terraform destroy --auto-approve"
+		    //}
+	    }
+	}
+	    
 	    stage('Destroy infras?') {
             steps{
                 input "Proceed destroying the infrastructure?"
