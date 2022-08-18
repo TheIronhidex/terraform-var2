@@ -14,7 +14,7 @@
       update_cache: no
     
   - name: Downloading Pre-Created Repository for Docker-ce
-    get-url:
+    get_url:
       url: https://download.docker.com/linux/rhel/docker-ce.repo
       dest: /etc/yum.repos.d/
       
