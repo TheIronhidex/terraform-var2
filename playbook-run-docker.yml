@@ -8,7 +8,9 @@
     command: sudo apt-get clean && update -y
     
   - name: Download docker installer 
-    command: curl -fsSL https://get.docker.com -o get-docker.sh
+    get_url: 
+      url: https://get.docker.com 
+      dest: get-docker.sh
     
   - name: Execute docker installer
     command: sudo sh get-docker.sh
