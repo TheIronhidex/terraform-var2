@@ -62,7 +62,7 @@ pipeline {
 	    
 	stage('Input of new variables') {
             steps{
-                sh "echo -e create_containers: ${NUMBER_CONTAINERS}\ndefault_container_image: ${env.DOCKER_REPO}/${JOB_BASE_NAME}:${BUILD_NUMBER}\nefault_container_command: run -d -p80:80 >> default.yml"
+                sh "echo -e create_containers: ${NUMBER_CONTAINERS}\ndefault_container_image: ${env.DOCKER_REPO}/${JOB_BASE_NAME}:${BUILD_NUMBER} >> default.json"
 	    }
         }
 	
