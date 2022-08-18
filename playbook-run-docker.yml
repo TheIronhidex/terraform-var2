@@ -6,12 +6,12 @@
   tasks:
   - name: Update the machine
     command: sudo apt-get clean && update -y
-  - name: Yum repolist for Docker
-    yum_repository:
-      name: docker
-      description: yum repository for docker
-      baseurl: https://download.docker.com/linux/centos/7/x86_64/stable/
-      gpgcheck: no
+    
+  - name: Install basic list of packages
+    apt:
+      name: ['ca-certificates','curl','gnupg','lsb-release']
+      state: present
+      update_cache: no
   - name: Add Docker GPG apt Key
     apt_key: url=https://download.docker.com/linux/ubuntu/gpg
   - name: Add Docker Repository
