@@ -2,7 +2,7 @@ pipeline {
     environment {
 	REGION = 'eu-west-3'
         DOCKER_REPO = 'theironhidex'
-	NUMBER_CONTAINERS = '1'
+	//NUMBER_CONTAINERS = '1'
       }
 
  agent any
@@ -62,7 +62,8 @@ pipeline {
 	    
 	stage('Input of new variables') {
             steps{
-                sh "echo -e create_containers: ${NUMBER_CONTAINERS}\ndefault_container_image: ${env.DOCKER_REPO}/${JOB_BASE_NAME}:${BUILD_NUMBER} >> default.json"
+                //sh "echo -e create_containers: ${NUMBER_CONTAINERS}\ndefault_container_image: ${env.DOCKER_REPO}/${JOB_BASE_NAME}:${BUILD_NUMBER} >> default.yml"
+		  sh "echo build_number: ${BUILD_NUMBER} > default.yml"  
 	    }
         }
 	
