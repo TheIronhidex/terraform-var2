@@ -73,11 +73,14 @@ pipeline {
             //}
         //}
 	    
-	stage('Executing Terraform Destroy') {
+	stage('terraform destroy') {
             steps{
+	     withCredentials([
+		     aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-jose', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
                 sh "terraform destroy --auto-approve"
-            }
-        }
+	            }
+	    }
+	}
 	    
 	stage ("Ansible run image") {
             steps {
